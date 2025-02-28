@@ -2,30 +2,33 @@ pipeline {
   agent any // Use any available agent
 
   stages {
-    stage('Checkout') {
+   stage('Checkout') {
       steps {
-        sh 'echo passed'
-        // git branch: 'main', url: 'https://github.com/shanmukhasrikanth-isikala/spring-boot-app.git'
+        deleteDir() // Clean workspace before fetching the latest code
+        git branch: 'main', url: 'https://github.com/shanmukhasrikanth-isikala/spring-boot-app.git'
       }
     }
-    
-    stage('Build and Test') {
+  stage('Build and Test') {
       steps {
-        sh 'ls -ltr'
-        // Build the project and create a JAR file
-        sh 'mvn clean package'
+        // build the project and create a JAR file
+        bat 'mvn clean package'
       }
     }
-    
-    stage('Static Code Analysis') {
-      environment {
-        SONAR_URL = "http://localhost:9001"
-      }
-      steps {
-        withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-          sh 'mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
+  stage('Static Code Analysis') {
+    environment {
+      SONAR_URL = "http://localhost:9000" // Change if running SonarQube remotely
+    }
+    steps {
+      withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
+        script {
+          if (isUnix()) {
+            sh 'mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=$SONAR_URL'
+          } else {
+            bat 'mvn sonar:sonar -Dsonar.login=%SONAR_AUTH_TOKEN% -Dsonar.host.url=%SONAR_URL%'
+          }
         }
       }
     }
+  }
   }
 }
