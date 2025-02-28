@@ -2,10 +2,10 @@ pipeline {
   agent any // Use any available agent
 
   stages {
-    stage('Checkout') {
+   stage('Checkout') {
       steps {
-        sh 'echo passed'
-        // git branch: 'main', url: 'https://github.com/shanmukhasrikanth-isikala/spring-boot-app.git'
+        deleteDir() // Clean workspace before fetching the latest code
+        git branch: 'main', url: 'https://github.com/shanmukhasrikanth-isikala/spring-boot-app.git'
       }
     }
   }
