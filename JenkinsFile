@@ -15,14 +15,20 @@ pipeline {
       }
     }
   stage('Static Code Analysis') {
-      environment {
-        SONAR_URL = "http://localhost:9001"
-      }
-      steps {
-        withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-          bat 'mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
+    environment {
+      SONAR_URL = "http://localhost:9001" // Change if running SonarQube remotely
+    }
+    steps {
+      withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
+        script {
+          if (isUnix()) {
+            sh 'mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=$SONAR_URL'
+          } else {
+            bat 'mvn sonar:sonar -Dsonar.login=%SONAR_AUTH_TOKEN% -Dsonar.host.url=%SONAR_URL%'
+          }
         }
       }
     }
+  }
   }
 }
