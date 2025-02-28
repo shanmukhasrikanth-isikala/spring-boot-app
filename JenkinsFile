@@ -22,9 +22,9 @@ pipeline {
       withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
         script {
           if (isUnix()) {
-            sh 'mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=$SONAR_URL'
+            sh 'mvn sonar:sonar -Dsonar.token=$SONAR_AUTH_TOKEN -Dsonar.host.url=$SONAR_URL'
           } else {
-            bat 'mvn sonar:sonar -Dsonar.login=%SONAR_AUTH_TOKEN% -Dsonar.host.url=%SONAR_URL%'
+            bat 'mvn sonar:sonar -Dsonar.token=%SONAR_AUTH_TOKEN% -Dsonar.host.url=%SONAR_URL%'
           }
         }
       }
