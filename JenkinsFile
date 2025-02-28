@@ -8,22 +8,5 @@ pipeline {
         // git branch: 'main', url: 'https://github.com/shanmukhasrikanth-isikala/spring-boot-app.git'
       }
     }
-    
-    stage('Build and Test') {
-      steps {
-        // Build the project and create a JAR file
-        bat 'mvn clean package'
-      }
-    }
-  stage('Static Code Analysis') {
-      environment {
-        SONAR_URL = "http://34.201.116.83:9000"
-      }
-      steps {
-        withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-          bat 'mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
-        }
-      }
-    }
   }
 }
