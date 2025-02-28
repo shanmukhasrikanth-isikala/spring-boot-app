@@ -4,6 +4,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
+        sh 'echo passed'
         // git branch: 'main', url: 'https://github.com/shanmukhasrikanth-isikala/spring-boot-app.git'
       }
     }
